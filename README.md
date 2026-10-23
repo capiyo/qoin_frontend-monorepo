@@ -29,3 +29,10 @@ pnpm dev:mobile   # Expo dev server
 - The original brief was pasted with the "Architecture & Charting" section cut off mid-sentence,
   so anything specific to charting/timeframe interaction beyond what's implemented here wasn't
   in what I received — flag it if there's more to the spec and I'll fill it in.
+
+
+## Qoin market-flow research services
+
+This branch also contains an early backend foundation under `services/`: Rust/Axum is authoritative for event ingestion, state estimation, and deterministic vector decisions; C++/Drogon is a thin gateway; MongoDB persists events and snapshots. Reference models and tests are under `research/` and `tests/`, with contracts and operational notes under `contracts/` and `docs/`.
+
+**Research/paper only.** No live order route is registered. The isolated Binance adapter is not wired to model signals. Native Rust/Drogon builds, MongoDB integration, replay/backtesting, testnet, and profitability remain unverified. See `docs/PROGRESS.md` and `docs/RISK_POLICY.md` before running services.
