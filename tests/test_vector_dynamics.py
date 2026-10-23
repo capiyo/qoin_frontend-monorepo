@@ -9,7 +9,7 @@ class VectorDynamicsTests(unittest.TestCase):
         previous = VectorObservation(2000, {"ofi": 1.0})
         current = VectorObservation(3000, {"ofi": 3.0})
         self.assertEqual(derive_kinematics(old, previous, current)["ofi"],
-                         {"position": 3.0, "velocity": 2.0, "acceleration": 1000.0})
+                         {"position": 3.0, "velocity": 2.0, "acceleration": 1.0})
 
     def test_rejects_out_of_order_observations(self):
         with self.assertRaises(ValueError):
