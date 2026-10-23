@@ -3,7 +3,7 @@
 Updated: 2026-10-23
 
 ## Verified in the available audited snapshot
-- Python reference-model and vector-model tests: 8/8 passed.
+- Python reference-model and vector-model tests: 8/8 passed in GitHub Actions.
 - JSON event schema parses successfully.
 - OpenAPI YAML parses successfully (6 paths in the audited snapshot).
 - Smoke script passes shell syntax validation.
@@ -16,7 +16,7 @@ Updated: 2026-10-23
 - Architecture and risk documentation.
 
 ## Not verified here
-- Rust compilation and unit tests: cargo/rustc were unavailable in the execution environment.
+- Rust compilation and unit tests: GitHub Actions passed `cargo test`; 3 Rust unit tests passed.
 - Drogon/C++ compilation: Drogon development package unavailable.
 - MongoDB integration and restart recovery.
 - Real market-data feed, testnet, event-driven backtesting, walk-forward validation, and shadow-mode comparison.
