@@ -35,4 +35,4 @@ pnpm dev:mobile   # Expo dev server
 
 This branch also contains an early backend foundation under `services/`: Rust/Axum is authoritative for event ingestion, state estimation, and deterministic vector decisions; C++/Drogon is a thin gateway; MongoDB persists events and snapshots. Reference models and tests are under `research/` and `tests/`, with contracts and operational notes under `contracts/` and `docs/`.
 
-**Research/paper only.** No live order route is registered. The isolated Binance adapter is not wired to model signals. Native Rust/Drogon builds, MongoDB integration, replay/backtesting, testnet, and profitability remain unverified. See `docs/PROGRESS.md` and `docs/RISK_POLICY.md` before running services.
+**Research/paper only.** No live order route is registered. The isolated Binance adapter is not wired to model signals. Rust build and vector unit tests pass in GitHub Actions. Drogon build, MongoDB integration, replay/backtesting, testnet, and profitability remain unverified. See `docs/PROGRESS.md` and `docs/RISK_POLICY.md` before running services.
