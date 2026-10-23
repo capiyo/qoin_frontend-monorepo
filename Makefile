@@ -3,7 +3,7 @@ SHELL := /bin/bash
 test:
 	python3 -m unittest discover -s tests -v
 smoke:
-	./scripts/smoke.sh
+	bash scripts/smoke.sh
 axum:
 	cd services/axum && cargo run
 gateway:
