@@ -3,7 +3,7 @@
 Updated: 2026-10-23
 
 ## Verified in the available audited snapshot
-- Python reference-model and vector-model tests: 8/8 passed in GitHub Actions.
+- Python reference-model and vector-model tests: 12/12 passed in GitHub Actions (including causal vector kinematics, regularized pairwise interactions, and Pareto top-k selection).
 - JSON event schema parses successfully.
 - OpenAPI YAML parses successfully (6 paths in the audited snapshot).
 - Smoke script passes shell syntax validation.
@@ -11,6 +11,7 @@ Updated: 2026-10-23
 
 ## Present in this integration branch
 - Rust Axum service manifest, event/state/vector API source, deterministic vector baseline, and isolated gated Binance adapter source.
+- Research-only causal position/velocity/acceleration and Pareto top-k helpers; example versioned parameter contract at `config/vector-model-v1.example.json` (not loaded by runtime).
 - C++ Drogon gateway proxy source and CMake configuration.
 - MongoDB development compose file and .env.example with loopback bindings and live mode disabled.
 - Architecture and risk documentation.
