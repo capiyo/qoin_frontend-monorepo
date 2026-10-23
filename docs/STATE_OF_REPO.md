@@ -6,7 +6,7 @@ This branch integrates a first research-engine foundation into `capiyo/qoin_fron
 The Python reference tests are present in this branch but have not yet been run against this remote branch inside a CI runner. In the earlier audited project snapshot, 8/8 Python tests passed, the JSON schema parsed, OpenAPI YAML parsed, and the smoke script passed shell syntax validation.
 
 ## Current limitations
-- Native Rust compilation, Rust unit tests, and Drogon compilation are unverified because toolchains were unavailable in the audit environment.
+- Rust compilation and its three vector-engine unit tests pass in GitHub Actions. Drogon compilation remains unverified because its development package was unavailable in the audit environment.
 - No lockfile or CI workflow is included yet.
 - State is currently held in memory and is not fully reconstructed from MongoDB after restart.
 - Model scales, weights, thresholds, and version are hardcoded; there is no versioned config contract consumed by runtime.
