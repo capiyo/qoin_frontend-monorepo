@@ -78,7 +78,7 @@ int main() {
             forwarded->setBody(response->getBody());
             cb(forwarded);
         });
-    }, {drogon::Get, drogon::Post});
+    }, {drogon::Post});
     const char* portEnv = std::getenv("QOIN_DROGON_PORT");
     const auto port = portEnv ? std::stoi(portEnv) : 8080;
     drogon::app().addListener("127.0.0.1", static_cast<uint16_t>(port));
