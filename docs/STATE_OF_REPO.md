@@ -3,7 +3,7 @@
 This branch integrates a first research-engine foundation into `capiyo/qoin_frontend-monorepo`. It adds Axum event/state/vector endpoints, a deterministic geometric baseline, an isolated Binance adapter source, a Drogon proxy, MongoDB development configuration, reference models, tests, and risk/architecture notes.
 
 ## Current verified status
-The Python reference tests are present in this branch but have not yet been run against this remote branch inside a CI runner. In the earlier audited project snapshot, 8/8 Python tests passed, the JSON schema parsed, OpenAPI YAML parsed, and the smoke script passed shell syntax validation.
+GitHub Actions passed the Python reference suite (12 tests) and Rust `cargo test` (3 vector-engine unit tests) on this branch. The event JSON schema parses in CI. The earlier audited snapshot also passed OpenAPI YAML parsing and smoke-script syntax validation.
 
 ## Current limitations
 - Rust compilation and its three vector-engine unit tests pass in GitHub Actions. Drogon compilation remains unverified because its development package was unavailable in the audit environment.
