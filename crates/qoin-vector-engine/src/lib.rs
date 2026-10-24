@@ -169,7 +169,6 @@ pub fn decide(
     // Angular and magnitude gates must both pass before a new directional entry.
     let buy_aligned = alignment >= config.min_alignment
         && angle_radians <= config.max_angle_radians;
-    let sell_angle = (1.0 + alignment).clamp(0.0, 2.0).sqrt().acos().mul_add(2.0, 0.0);
     let sell_aligned = alignment <= -config.min_alignment
         && (std::f64::consts::PI - angle_radians) <= config.max_angle_radians;
     let decision = if score >= config.signal_threshold && buy_aligned {
@@ -186,7 +185,6 @@ pub fn decide(
     } else {
         "research baseline; top-k force attention; signal only; independent risk gate required".to_owned()
     };
-    let _ = sell_angle;
 
     Ok(Signal {
         decision,
@@ -228,6 +226,16 @@ mod tests {
         let mut input = sample();
         input.ofi = f64::NAN;
         assert_eq!(decide(input, &EngineConfig::default(), "baseline-v2", false).unwrap_err(), EngineError::NonFiniteInput);
+    }
+
+    #[test]
+    fn strong_negative_force_produces_sell() {
+        let input = ForceObservation {
+            ofi: -2.0, liquidity: -1.0, volatility: 0.2, funding: 0.5,
+            open_interest_change: -1.0, liquidation_pressure: -0.5, basis: 0.0,
+        };
+        let result = decide(input, &EngineConfig::default(), "baseline-v2", false).unwrap();
+        assert_eq!(result.decision, Decision::Sell);
     }
 
     #[test]
