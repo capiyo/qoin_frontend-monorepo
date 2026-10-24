@@ -1,7 +1,13 @@
-use axum::{extract::State, http::StatusCode, routing::{get, post}, Json, Router};
-use qoin_vector_engine::{decide, Decision, EngineConfig, ForceObservation, Signal};
+use axum::{
+    extract::State,
+    http::{header::CONTENT_TYPE, HeaderValue, Method, StatusCode},
+    routing::{get, post},
+    Json, Router,
+};
+use qoin_vector_engine::{decide, EngineConfig, ForceObservation, Signal};
 use serde::{Deserialize, Serialize};
 use std::{net::SocketAddr, sync::Arc};
+use tower_http::cors::CorsLayer;
 
 #[derive(Clone)]
 struct AppState {
@@ -32,11 +38,22 @@ async fn main() {
         config: EngineConfig::default(),
         config_version: "baseline-v1".to_owned(),
     });
+    let cors = CorsLayer::new()
+        .allow_origin([
+            HeaderValue::from_static("http://localhost:5173"),
+            HeaderValue::from_static("http://127.0.0.1:5173"),
+            HeaderValue::from_static("http://localhost:3000"),
+            HeaderValue::from_static("http://127.0.0.1:3000"),
+        ])
+        .allow_methods([Method::GET, Method::POST])
+        .allow_headers([CONTENT_TYPE]);
     let app = Router::new()
         .route("/health", get(health))
         .route("/v1/signal", post(signal))
+        .layer(cors)
         .with_state(state);
 
+    // Loopback binding keeps this research API local by default.
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     let listener = tokio::net::TcpListener::bind(addr).await.expect("bind API listener");
     tracing::info!(%addr, "Qoin research API listening; live trading is disabled");
@@ -56,7 +73,8 @@ async fn signal(
         &state.config,
         &state.config_version,
         request.has_open_position,
-    ).map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
+    )
+    .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
 
     // A signal is not an order. No exchange adapter is called here.
     Ok(Json(result))
