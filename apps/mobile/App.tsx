@@ -10,6 +10,7 @@ import { LoginScreen } from "./src/screens/LoginScreen";
 import { DashboardScreen } from "./src/screens/DashboardScreen";
 import { PositionsScreen } from "./src/screens/PositionsScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
+import { SignalScreen } from "./src/screens/SignalScreen";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -23,8 +24,8 @@ const queryClient = new QueryClient();
 
 // Simple bottom tab bar hand-rolled to avoid an extra nav dependency;
 // swap for @react-navigation/bottom-tabs if you want native tab transitions.
-function TabBar({ current, onChange }: { current: "Dashboard" | "Positions" | "Settings"; onChange: (t: "Dashboard" | "Positions" | "Settings") => void }) {
-  const tabs: Array<"Dashboard" | "Positions" | "Settings"> = ["Dashboard", "Positions", "Settings"];
+function TabBar({ current, onChange }: { current: "Dashboard" | "Positions" | "Signal" | "Settings"; onChange: (t: "Dashboard" | "Positions" | "Signal" | "Settings") => void }) {
+  const tabs: Array<"Dashboard" | "Positions" | "Signal" | "Settings"> = ["Dashboard", "Positions", "Signal", "Settings"];
   return (
     <View style={styles.tabBar}>
       {tabs.map((t) => (
@@ -39,12 +40,13 @@ function TabBar({ current, onChange }: { current: "Dashboard" | "Positions" | "S
 }
 
 function MainTabs() {
-  const [tab, setTab] = useState<"Dashboard" | "Positions" | "Settings">("Dashboard");
+  const [tab, setTab] = useState<"Dashboard" | "Positions" | "Signal" | "Settings">("Dashboard");
   return (
     <View style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
       <View style={{ flex: 1 }}>
         {tab === "Dashboard" && <DashboardScreen />}
         {tab === "Positions" && <PositionsScreen />}
+        {tab === "Signal" && <SignalScreen />}
         {tab === "Settings" && <SettingsScreen />}
       </View>
       <TabBar current={tab} onChange={setTab} />
