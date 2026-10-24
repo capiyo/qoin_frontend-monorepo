@@ -167,22 +167,26 @@ pub fn decide(
     let score = (directional * dampener).clamp(-config.score_clip, config.score_clip);
 
     // Angular and magnitude gates must both pass before a new directional entry.
-    let aligned = alignment >= config.min_alignment
+    let buy_aligned = alignment >= config.min_alignment
         && angle_radians <= config.max_angle_radians;
-    let decision = if score >= config.signal_threshold && aligned {
+    let sell_angle = (1.0 + alignment).clamp(0.0, 2.0).sqrt().acos().mul_add(2.0, 0.0);
+    let sell_aligned = alignment <= -config.min_alignment
+        && (std::f64::consts::PI - angle_radians) <= config.max_angle_radians;
+    let decision = if score >= config.signal_threshold && buy_aligned {
         Decision::Buy
-    } else if score <= -config.signal_threshold && aligned {
+    } else if score <= -config.signal_threshold && sell_aligned {
         Decision::Sell
     } else if has_open_position {
         Decision::Close
     } else {
         Decision::Wait
     };
-    let rationale = if !aligned {
-        "WAIT: force vector failed angular convergence; research baseline only".to_owned()
+    let rationale = if !buy_aligned && !sell_aligned {
+        "WAIT: force vector failed directional angular convergence; research baseline only".to_owned()
     } else {
         "research baseline; top-k force attention; signal only; independent risk gate required".to_owned()
     };
+    let _ = sell_angle;
 
     Ok(Signal {
         decision,
