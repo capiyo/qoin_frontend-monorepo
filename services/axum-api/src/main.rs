@@ -34,10 +34,33 @@ async fn main() {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    let state = Arc::new(AppState {
-        config: EngineConfig::default(),
-        config_version: "baseline-v1".to_owned(),
-    });
+    // Every runtime parameter is explicit and tied to a config version.
+    // Invalid values fail startup rather than silently changing model behavior.
+    let mut config = EngineConfig::default();
+    if let Ok(value) = std::env::var("QOIN_SIGNAL_THRESHOLD") {
+        config.signal_threshold = value.parse().expect("QOIN_SIGNAL_THRESHOLD must be numeric");
+    }
+    if let Ok(value) = std::env::var("QOIN_INPUT_CLIP") {
+        config.input_clip = value.parse().expect("QOIN_INPUT_CLIP must be numeric");
+    }
+    if let Ok(value) = std::env::var("QOIN_TOP_K") {
+        config.top_k = value.parse().expect("QOIN_TOP_K must be an integer");
+    }
+    if let Ok(value) = std::env::var("QOIN_MIN_ALIGNMENT") {
+        config.min_alignment = value.parse().expect("QOIN_MIN_ALIGNMENT must be numeric");
+    }
+    if let Ok(value) = std::env::var("QOIN_MAX_ANGLE_RADIANS") {
+        config.max_angle_radians = value.parse().expect("QOIN_MAX_ANGLE_RADIANS must be numeric");
+    }
+    let config_version = std::env::var("QOIN_CONFIG_VERSION")
+        .unwrap_or_else(|_| "baseline-v2".to_owned());
+    // Validate configuration before opening the HTTP listener.
+    qoin_vector_engine::decide(
+        ForceObservation { ofi: 0.0, liquidity: 0.0, volatility: 0.0, funding: 0.0,
+            open_interest_change: 0.0, liquidation_pressure: 0.0, basis: 0.0 },
+        &config, &config_version, false,
+    ).expect("Qoin engine configuration must be valid");
+    let state = Arc::new(AppState { config, config_version });
     let cors = CorsLayer::new()
         .allow_origin([
             HeaderValue::from_static("http://localhost:5173"),
