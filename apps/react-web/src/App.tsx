@@ -5,7 +5,7 @@ import {
   type MarketForceObservation,
   type QoinHealth,
   type QoinSignal,
-} from "@qoin/core/src/qoinApi";
+} from "@qoin/core";
 
 const initial: MarketForceObservation = {
   ofi: 1.2,
@@ -98,6 +98,9 @@ export default function App() {
               <div className={`signal-badge ${signal.decision.toLowerCase()}`}>{signal.decision}</div>
               <div className="score-line"><span>Directional score</span><strong>{signal.score.toFixed(3)}</strong></div>
               <div className="meter"><span style={{ width: `${Math.min(100, Math.abs(signal.score) * 100)}%` }} /></div>
+              <div className="score-line"><span>Angular alignment</span><strong>{signal.alignment.toFixed(3)}</strong></div>
+              <div className="score-line"><span>Angle (radians)</span><strong>{signal.angle_radians.toFixed(3)}</strong></div>
+              <div className="score-line"><span>Active forces</span><strong>{signal.active_force_count} / 7</strong></div>
               <div className="score-line"><span>Configuration</span><strong>{signal.config_version}</strong></div>
               <p className="hint">{signal.rationale}</p>
             </>
