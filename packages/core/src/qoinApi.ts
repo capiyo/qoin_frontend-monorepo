@@ -13,6 +13,9 @@ export type QoinDecision = "BUY" | "SELL" | "CLOSE" | "WAIT";
 export type QoinSignal = {
   decision: QoinDecision;
   score: number;
+  alignment: number;
+  angle_radians: number;
+  active_force_count: number;
   config_version: string;
   rationale: string;
 };
