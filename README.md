@@ -29,3 +29,18 @@ pnpm dev:mobile   # Expo dev server
 - The original brief was pasted with the "Architecture & Charting" section cut off mid-sentence,
   so anything specific to charting/timeframe interaction beyond what's implemented here wasn't
   in what I received — flag it if there's more to the spec and I'll fill it in.
+
+
+## Qoin market-flow research services
+
+This branch also contains an early backend foundation under `services/`: Rust/Axum is authoritative for event ingestion, state estimation, and deterministic vector decisions; C++/Drogon is a thin gateway; MongoDB persists events and snapshots. Reference models and tests are under `research/` and `tests/`, with contracts and operational notes under `contracts/` and `docs/`.
+
+**Research/paper only.** No live order route is registered. The isolated Binance adapter is not wired to model signals. Rust build and vector unit tests pass in GitHub Actions. Drogon build, MongoDB integration, replay/backtesting, testnet, and profitability remain unverified. See `docs/PROGRESS.md` and `docs/RISK_POLICY.md` before running services.
+
+
+### Qoin algorithm research paper
+
+- [Detailed PDF: observations, mathematical specification, and philosophy](docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.pdf)
+- [Editable Markdown source](docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.md)
+
+The paper separates the current implemented baseline from proposed research targets. It makes no profitability claim; live order submission remains disabled.
