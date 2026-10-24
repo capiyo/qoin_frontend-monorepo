@@ -1,46 +1,77 @@
-# Qoin Monorepo
+# Qoin — Market-Force Trading Research Monorepo
 
-Real-time crypto trading dashboard. pnpm workspaces + Turborepo.
+A multi-client workspace for researching a present-centered crypto market-force algorithm. React web and React Native share API contracts; Rust/Axum is authoritative for signal computation. The current engine is a research baseline, not a validated trading strategy.
 
-- `apps/web` — Next.js (React, TypeScript, TanStack Query, Tailwind)
-- `apps/mobile` — Expo / React Native
-- `packages/core` — shared theme tokens, types, and mock market-data engine used by both apps
+## Monorepo layout
 
-## Getting started
+- `apps/react-web` — React + TypeScript + Vite research dashboard.
+- `apps/web` — existing Next.js React dashboard.
+- `apps/mobile` — Expo / React Native app.
+- `packages/core` — shared UI tokens, types, mock market data, and Qoin API client.
+- `crates/qoin-vector-engine` — deterministic Rust signal engine.
+- `services/axum-api` — Axum health and research-signal API.
+- `services/` — existing market-data / gateway service foundation.
+- `docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.md` and PDF — mathematical and philosophical specification.
+- `docs/MONOREPO_ARCHITECTURE.md` — component responsibilities and next engineering gates.
 
-```bash
+## Requirements
+
+- Node.js and pnpm 9
+- Rust stable toolchain (Cargo)
+
+## Start the React web dashboard
+
+```sh
 pnpm install
-pnpm dev:web      # Next.js on http://localhost:3000
-pnpm dev:mobile   # Expo dev server
+pnpm dev:react-web
 ```
 
-## Notes
+Vite serves the UI at `http://localhost:5173`. By default, the API client expects the research API at `http://127.0.0.1:8080`. Set `NEXT_PUBLIC_QOIN_API_URL` for the web client if the API is hosted elsewhere.
 
-- Mock data lives in `packages/core/src/mockData.ts` and simulates a WebSocket price feed
-  (random-walk candles + live PnL) so both apps run with no backend. Swap `useMarketFeed`'s
-  internals for a real WebSocket client to go live — the hook's return shape is the contract.
-- Brand tokens (colors, semantics) are centralized in `packages/core/src/theme.ts` and consumed
-  by `apps/web/tailwind.config.ts` and `apps/mobile/src/theme/`. Change them in one place.
-- `FeedBanner` (web + mobile) surfaces stale/disconnected states prominently, separate from the
-  small `StatusBadge` in the header, so degraded data is never silently displayed as current.
-- `OrderTicket` (web + mobile) is a buy/sell form with a market/limit toggle and an explicit
-  confirm step before "placing" an order. It only updates local state — wire it to a real order
-  endpoint when one exists.
-- The original brief was pasted with the "Architecture & Charting" section cut off mid-sentence,
-  so anything specific to charting/timeframe interaction beyond what's implemented here wasn't
-  in what I received — flag it if there's more to the spec and I'll fill it in.
+## Start the React Native app
 
+```sh
+pnpm dev:mobile
+```
 
-## Qoin market-flow research services
+For a physical device or emulator, configure `EXPO_PUBLIC_QOIN_API_URL` to a reachable API host. Android emulator localhost normally maps to `10.0.2.2`; a physical device needs the development machine's LAN address. The API currently binds to loopback for safety, so adjust its bind address deliberately for device testing.
 
-This branch also contains an early backend foundation under `services/`: Rust/Axum is authoritative for event ingestion, state estimation, and deterministic vector decisions; C++/Drogon is a thin gateway; MongoDB persists events and snapshots. Reference models and tests are under `research/` and `tests/`, with contracts and operational notes under `contracts/` and `docs/`.
+## Start and test the Rust research API
 
-**Research/paper only.** No live order route is registered. The isolated Binance adapter is not wired to model signals. Rust build and vector unit tests pass in GitHub Actions. Drogon build, MongoDB integration, replay/backtesting, testnet, and profitability remain unverified. See `docs/PROGRESS.md` and `docs/RISK_POLICY.md` before running services.
+```sh
+cargo test --workspace
+pnpm dev:api
+```
 
+- `GET /health` — service health and mode.
+- `POST /v1/signal` — evaluates seven normalized market-force inputs and returns a versioned research signal.
 
-### Qoin algorithm research paper
+Example request:
+
+```json
+{
+  "observation": {
+    "ofi": 1.2,
+    "liquidity": 0.4,
+    "volatility": 0.3,
+    "funding": -0.2,
+    "open_interest_change": 0.6,
+    "liquidation_pressure": 0.1,
+    "basis": 0.0
+  },
+  "has_open_position": false
+}
+```
+
+## Important status and safety limits
+
+- The current Rust coefficients are explicit baseline values, not trained weights or evidence of edge.
+- Inputs to the signal API are expected to be causally normalized upstream; production ingestion, past-only rolling normalization, persistence, Pareto selection, and event replay remain work to complete.
+- A signal is not an order. The API does not call an exchange adapter or submit orders.
+- `LIVE_TRADING=false` is the required default. No real orders are sent by this API; do not enable real-money execution without explicit human approval.
+- Backtesting, paper/shadow validation, testnet, realistic costs, and profitability remain unverified. See `docs/PROGRESS.md`, `docs/RISK_POLICY.md`, and `docs/MONOREPO_ARCHITECTURE.md`.
+
+## Algorithm paper
 
 - [Detailed PDF: observations, mathematical specification, and philosophy](docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.pdf)
 - [Editable Markdown source](docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.md)
-
-The paper separates the current implemented baseline from proposed research targets. It makes no profitability claim; live order submission remains disabled.
