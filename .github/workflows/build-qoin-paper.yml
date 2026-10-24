@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: qoin-paper-{{ github.ref }}
+  group: qoin-paper-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: qoin-engine-integration
-          token: ${'{'}{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
