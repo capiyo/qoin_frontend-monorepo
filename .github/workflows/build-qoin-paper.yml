@@ -6,6 +6,12 @@ on:
       - 'docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.md'
       - 'scripts/build_qoin_paper.py'
       - '.github/workflows/build-qoin-paper.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'docs/QOIN_ALGORITHM_OBSERVATIONS_MATH_PHILOSOPHY.md'
+      - 'scripts/build_qoin_paper.py'
+      - '.github/workflows/build-qoin-paper.yml'
   workflow_dispatch:
 
 permissions:
