@@ -29,11 +29,13 @@ export type QoinHealth = {
 };
 
 function getBaseUrl(): string {
-  // For Android emulator use http://10.0.2.2:8080; for iOS simulator
-  // use http://127.0.0.1:8080. Configure a reachable LAN URL on physical devices.
-  const configured = typeof process !== "undefined"
-    ? process.env?.EXPO_PUBLIC_QOIN_API_URL ?? process.env?.NEXT_PUBLIC_QOIN_API_URL
-    : undefined;
+  // Android emulator: http://10.0.2.2:8080; iOS simulator: http://127.0.0.1:8080.
+  // Physical devices need a reachable host configured for the development environment.
+  const runtime = globalThis as typeof globalThis & {
+    process?: { env?: Record<string, string | undefined> };
+  };
+  const env = runtime.process?.env;
+  const configured = env?.EXPO_PUBLIC_QOIN_API_URL ?? env?.NEXT_PUBLIC_QOIN_API_URL;
   return (configured || "http://127.0.0.1:8080").replace(/\/$/, "");
 }
 
